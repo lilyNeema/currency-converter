@@ -1,0 +1,26 @@
+import requests
+
+class CurrencyConverter:
+    def __init__(self, url):
+        self.data = requests.get(url).json()
+        self.currencies = self.data['rates']
+
+    def convert(self, from_currency, to_currency, amount):
+        initial_amount = amount
+        if from_currency != 'USD':
+            amount = amount / self.currencies[from_currency]
+
+        amount = round(amount * self.currencies[to_currency], 2)
+        return f"{initial_amount} {from_currency} = {amount} {to_currency}"
+
+# Example usage
+if __name__ == "__main__":
+    url = "https://api.exchangerate-api.com/v4/latest/USD"
+    converter = CurrencyConverter(url)
+
+    from_currency = input("Enter the currency you have: ").upper()
+    to_currency = input("Enter the currency you want: ").upper()
+    amount = float(input("Enter the amount: "))
+
+    result = converter.convert(from_currency, to_currency, amount)
+    print(result)
